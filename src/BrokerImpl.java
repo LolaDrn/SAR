@@ -1,6 +1,6 @@
-public class BrokerA extends Broker{
+public class BrokerImpl extends Broker{
 
-	public BrokerA(String name) throws Exception {
+	public BrokerImpl(String name) throws Exception {
 		super(name);
 		// TODO Auto-generated constructor stub
 	}
@@ -38,8 +38,8 @@ public class BrokerA extends Broker{
     	Broker match=BrokerManager.getInstance().getBufferMap().get(name);
     	
     	//creation des nouveaux channels, un pour broker accept et un pour broker connect
-    	ChannelA connectChannel=new ChannelA();
-    	ChannelA acceptChannel=new ChannelA();
+    	ChannelImpl connectChannel=new ChannelImpl();
+    	ChannelImpl acceptChannel=new ChannelImpl();
     	
     	connectChannel.setMatch(acceptChannel);
     	acceptChannel.setMatch(connectChannel);

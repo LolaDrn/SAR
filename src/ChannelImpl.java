@@ -1,14 +1,14 @@
 import java.io.IOException;
 import java.util.concurrent.locks.Lock;
 
-public class ChannelA extends Channel{
+public class ChannelImpl extends Channel{
 	
 	private boolean isDisconnected;
-	private ChannelA match;
+	private ChannelImpl match;
 	private Object lock;
 	private CircularBuffer buf;
 
-	public ChannelA() {
+	public ChannelImpl() {
 		this.isDisconnected = false;
 		this.buf=new CircularBuffer(100);
 	}
@@ -112,12 +112,12 @@ public class ChannelA extends Channel{
     }
 	
 
-	public void setMatch(ChannelA match) {
+	public void setMatch(ChannelImpl match) {
 		this.match = match;
 	}
 	
 
-	public ChannelA getMatch() {
+	public ChannelImpl getMatch() {
 		return match;
 	}
 

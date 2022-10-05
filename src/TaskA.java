@@ -1,10 +1,10 @@
 
 public class TaskA extends Task{
 	
-	protected BrokerA broker;
+	private BrokerImpl broker;
 
 	public TaskA(String brokerName) throws Exception {
-		this.broker= new BrokerA(brokerName);
+		this.broker= new BrokerImpl(brokerName);
 
 	}
 

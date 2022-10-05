@@ -7,7 +7,7 @@ public abstract class Broker {
 	//liste des ports sur lequels le broker ecoute
 	protected ArrayList<Integer> listeningports= new ArrayList<Integer>();
 	//hashmap des ports recevant une connexion d'un Broker
-	protected HashMap<Integer, ChannelA> incoming= new HashMap<Integer, ChannelA>();
+	protected HashMap<Integer, ChannelImpl> incoming= new HashMap<Integer, ChannelImpl>();
 		
 	
 	public Broker(String name) throws Exception {
