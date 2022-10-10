@@ -29,7 +29,7 @@ public class ChannelImpl extends Channel{
 	    				this.disconnect();
 	    				throw new IOException("Channels have been disconnected");
 	    			}
-					lock.wait(300);
+					lock.wait();
 	    		}	        	
 
 	    		while (i < bytes.length && i < length && !this.buf.empty()) {
@@ -61,22 +61,22 @@ public class ChannelImpl extends Channel{
         
         synchronized(lock) {
         	
-			while (i < bytes.length && i < length) {
 
 				try {
 					
-					//On ne peut pas écrire tant que le buffer est plein --> bloquant
-		    		while (this.buf.full()) {
-		    			//si deconnexion d'un des cote on ferme tout
-		    			if (this.match.disconnected() || this.isDisconnected) { 
-		    				this.match.disconnect();
-		    				this.disconnect();
-		    				throw new IOException("Channels have been disconnected");
-		    			}
-							lock.wait(300);
-						
-		    		}
-				
+				//On ne peut pas écrire tant que le buffer est plein --> bloquant
+	    		while (this.buf.full()) {
+	    			//si deconnexion d'un des cote on ferme tout
+	    			if (this.match.disconnected() || this.isDisconnected) { 
+	    				this.match.disconnect();
+	    				this.disconnect();
+	    				throw new IOException("Channels have been disconnected");
+	    			}
+						lock.wait();
+					
+	    		}
+				while (i < bytes.length && i < length && !this.buf.full()) {
+
 						//si deconnexion d'un des cote on ferme tout
 						if (this.match.disconnected() || this.isDisconnected) { 
 							this.match.disconnect();
@@ -88,13 +88,14 @@ public class ChannelImpl extends Channel{
 				   		i++;
 	        	lock.notifyAll();
 				}
+				}
 				catch (Exception e) {
 					e.printStackTrace();
 					System.out.println("Any bytes have been read");
 					return 0;        
 				}
 	        }
-        }
+        
 		return i; 
 	}
 	

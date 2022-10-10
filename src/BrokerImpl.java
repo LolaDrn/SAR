@@ -1,10 +1,39 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 public class BrokerImpl extends Broker{
 
 	public BrokerImpl(String name) throws Exception {
 		super(name);
-		// TODO Auto-generated constructor stub
+		listeningports= new ArrayList<Integer>();
+		incoming = new HashMap<Integer, ChannelImpl>();
 	}
 
+	@Override
+	public Channel accept(int port) throws Exception {
+		Channel c = null;
+		try {
+			c=BrokerManager.getInstance().accept(this, this.name, port);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return c;
+	}
+
+	@Override
+	public Channel connect(String name, int port) throws Exception {
+		Channel c = null;
+		try {
+			c=BrokerManager.getInstance().connect(this, name, port);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return c;
+	}
+
+	
+	/*
 	@Override
 	public synchronized Channel accept(int port) throws Exception { 
     	if (this.listeningports.contains(port)) {
@@ -15,7 +44,7 @@ public class BrokerImpl extends Broker{
     	
     	//bloquant en attente d'une connection sur ce port
     	while (this.listeningports.contains(port)) {
-		    	wait(300);
+		    	wait();
     	}
     	//recuperation du channel ajoute a la liste dans le connect
     	Channel connected= this.incoming.get(port);
@@ -30,9 +59,14 @@ public class BrokerImpl extends Broker{
 
 	@Override
 	public synchronized Channel connect(String name, int port) throws Exception { 
+		//verifier si le broker a qui on  veut se connecter est deja utilise si oui pas possible 
+		if (BrokerManager.getInstance().getBufferMap().get(name).incoming.containsKey(port)) {
+			throw new Exception ("A broker is already connected on this port");
+		}
+		
     	//tant qu'on ne trouve pas le broker demande on bloque
     	while (!BrokerManager.getInstance().getBufferMap().containsKey(name)) { 
-	    	wait(300);
+	    	wait();
     	}
     	
     	Broker match=BrokerManager.getInstance().getBufferMap().get(name);
@@ -72,6 +106,6 @@ public class BrokerImpl extends Broker{
     	System.out.println("The broker " + this.name + " is connected on port " + port + " with "+match);
     	
 		return connectChannel;
-    }
+    }*/
 
 }

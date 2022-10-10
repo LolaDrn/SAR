@@ -1,23 +1,25 @@
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public abstract class Broker {
 	//nom du Broker
 	protected String name;
 	//liste des ports sur lequels le broker ecoute
-	protected ArrayList<Integer> listeningports= new ArrayList<Integer>();
+	protected List<Integer> listeningports;
 	//hashmap des ports recevant une connexion d'un Broker
-	protected HashMap<Integer, ChannelImpl> incoming= new HashMap<Integer, ChannelImpl>();
+	protected Map<Integer, ChannelImpl> incoming;
 		
 	
 	public Broker(String name) throws Exception {
-		//le nom du broker doit etre unique
-		if (!BrokerManager.getInstance().getBufferMap().containsKey(name)){
-			this.name=name;
-			BrokerManager.getInstance().getBufferMap().put(name,this);
-		}
-		else {
-			throw new Exception("The broker name has to be unique");
+		synchronized(BrokerManager.getInstance()) {
+			//le nom du broker doit etre unique
+			if (!BrokerManager.getInstance().getBufferMap().containsKey(name)){
+				this.name=name;
+				BrokerManager.getInstance().getBufferMap().put(name,this);
+			}
+			else {
+				throw new Exception("The broker name has to be unique");
+			}
 		}
 	}
 
