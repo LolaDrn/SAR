@@ -12,9 +12,10 @@ public class Rdv {
 		this.port = port;
 	}
 	
-	public synchronized Channel connect() throws InterruptedException {
+	public synchronized Channel connect(Broker b) throws InterruptedException {
 		ChannelImpl connectChannel = null;
-		if (ab==null) {
+		cb=b;
+		while (ab==null) {
 			wait();
 		}
 		
@@ -40,7 +41,8 @@ public class Rdv {
 		
 	}
 	
-	public synchronized Channel accept() throws InterruptedException {
+	public synchronized Channel accept(Broker b) throws InterruptedException {
+		ab=b;
 		//notifie que ab n'est pas null
 		notifyAll();
 		//tant que le channel n'est pas cree par connect
