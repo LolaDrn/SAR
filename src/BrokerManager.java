@@ -32,31 +32,31 @@ public class BrokerManager {
 		
 		synchronized (lockRdv) {
 			lockRdv.lock();
-		//recherche dans la liste des rdv si un rdv correspondant au nom et port existe
-		for (int i=0; i<rdv.size();i++) {
-			if (rdv.get(i).name==name && rdv.get(i).port==port) {
-				connectRdv=rdv.get(i);
+			//recherche dans la liste des rdv si un rdv correspondant au nom et port existe
+			for (int i=0; i<rdv.size();i++) {
+				if (rdv.get(i).name.equals(name) && rdv.get(i).port==port) {
+					connectRdv=rdv.get(i);
+				}
 			}
-		}
-		
-		//si le rdv n'existe pas on le cree, on lui ajoute le broker et on l'ajoute à la liste des rdv
-		if (connectRdv==null) {
-			connectRdv = new Rdv(name, port);
-			rdv.add(connectRdv);
-		}
-		
-		//rdv deja existant avec un accept
-		else if (connectRdv.getAb()!=null) {
-				rdv.remove(connectRdv);
-		}
-		
-		//rdv deja existant avec un connect --> les connects qui arrivent attendent qu'un nouveau rdv existe
-		else if (connectRdv.getCb()!=null) {
-			synchronized(this) {
-				wait();
+			
+			//si le rdv n'existe pas on le cree, on lui ajoute le broker et on l'ajoute à la liste des rdv
+			if (connectRdv==null) {
+				connectRdv = new Rdv(name, port);
+				rdv.add(connectRdv);
 			}
-		}
-		lockRdv.unlock();
+			
+			//rdv deja existant avec un accept
+			else if (connectRdv.getAb()!=null) {
+					rdv.remove(connectRdv);
+			}
+			
+			lockRdv.unlock();
+			//rdv deja existant avec un connect --> les connects qui arrivent attendent qu'un nouveau rdv existe
+			if (connectRdv.getCb()!=null) {
+				synchronized(this) {
+					wait();
+				}
+			}
 		}
 		connectChannel = connectRdv.connect(b);
 		return connectChannel;
@@ -68,24 +68,24 @@ public class BrokerManager {
 		Rdv acceptRdv=null;
 		synchronized (lockRdv) {
 			lockRdv.lock();
-		//recherche dans la liste des rdv si un rdv correspondant au nom et port existe
-		for (int i=0; i<rdv.size();i++) {
-			if (rdv.get(i).name==name && rdv.get(i).port==port) {
-				acceptRdv=rdv.get(i);
+			//recherche dans la liste des rdv si un rdv correspondant au nom et port existe
+			for (int i=0; i<rdv.size();i++) {
+				if (rdv.get(i).name==name && rdv.get(i).port==port) {
+					acceptRdv=rdv.get(i);
+				}
 			}
-		}
-		
-		//si le rdv n'existe pas on le cree, on lui ajoute le broker et on l'ajoute à la liste des rdv
-		if (acceptRdv==null) {
-			acceptRdv = new Rdv(name, port);
-			rdv.add(acceptRdv);
-		}
-		
-		//rdv deja existant avec un connect
-		else if (acceptRdv.getCb()!=null) {
-			rdv.remove(acceptRdv);
-		}
-		lockRdv.unlock();
+			
+			//si le rdv n'existe pas on le cree, on lui ajoute le broker et on l'ajoute à la liste des rdv
+			if (acceptRdv==null) {
+				acceptRdv = new Rdv(name, port);
+				rdv.add(acceptRdv);
+			}
+			
+			//rdv deja existant avec un connect
+			else if (acceptRdv.getCb()!=null) {
+				rdv.remove(acceptRdv);
+			}
+			lockRdv.unlock();
 
 		}
 		acceptChannel = acceptRdv.accept(b);

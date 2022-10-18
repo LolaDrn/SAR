@@ -18,6 +18,7 @@ public class BrokerImpl extends Broker{
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
+    	System.out.println("The broker " + this.name + " has accepted a connection on port " + port );
 		return c;
 	}
 
@@ -29,6 +30,7 @@ public class BrokerImpl extends Broker{
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
+    	System.out.println("The broker " + this.name + " is connected on port " + port );
 		return c;
 	}
 

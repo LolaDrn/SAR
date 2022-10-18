@@ -10,7 +10,7 @@ public class ChannelImpl extends Channel{
 
 	public ChannelImpl() {
 		this.isDisconnected = false;
-		this.buf=new CircularBuffer(100);
+		this.buf=new CircularBuffer(64);
 	}
 
 	@Override
@@ -19,36 +19,32 @@ public class ChannelImpl extends Channel{
         int i = 0;
         
         synchronized(lock) {
+    		while (i < bytes.length && i < length ) {
 
-	        try {
-	        	//bloquant tant qu'il n'y a rien a lire
-	    		while (this.buf.empty()) {
-	    			//si deconnexion d'un des cote on ferme tout
+		        try {
+		        	//si deconnexion d'un des cote on ferme tout
 	    			if (this.match.disconnected() || this.isDisconnected) { 
 	    				this.match.disconnect();
 	    				this.disconnect();
 	    				throw new IOException("Channels have been disconnected");
 	    			}
-					lock.wait();
-	    		}	        	
-
-	    		while (i < bytes.length && i < length && !this.buf.empty()) {
-	    			//si deconnexion d'un des cote on ferme tout
-	    			if (this.match.disconnected() || this.isDisconnected) { 
-	    				this.match.disconnect();
-	    				this.disconnect();
-	    				throw new IOException("Channels have been disconnected");
-	    			}
-	            	bytes[offset + i] = buf.pull();
-	            	i++;
-	            }
-	        	lock.notifyAll();
-	            	
-	        } 
-	        catch (Exception e) {
-	        	e.printStackTrace();
-				System.out.println("Any bytes have been read");
-				return 0;        }
+	    			
+		        	//bloquant tant qu'il n'y a rien a lire
+		    		if (this.buf.empty()) {
+						lock.wait();
+		    		}	        	
+	
+		    		else {	
+		            	bytes[offset + i] = buf.pull();
+		            	i++;
+				   		lock.notifyAll();
+		    		}
+		        } 
+		        catch (Exception e) {
+		        	e.printStackTrace();
+					System.out.println("An error occured, not all bytes have been read");
+					return i;        }
+    		}
         }
         return i;
 
@@ -61,40 +57,36 @@ public class ChannelImpl extends Channel{
         
         synchronized(lock) {
         	
+			while (i < bytes.length && i < length) {
 
 				try {
-					
-				//On ne peut pas écrire tant que le buffer est plein --> bloquant
-	    		while (this.buf.full()) {
-	    			//si deconnexion d'un des cote on ferme tout
+					//si deconnexion d'un des cote on ferme tout
 	    			if (this.match.disconnected() || this.isDisconnected) { 
 	    				this.match.disconnect();
 	    				this.disconnect();
 	    				throw new IOException("Channels have been disconnected");
 	    			}
-						lock.wait();
-					
-	    		}
-				while (i < bytes.length && i < length && !this.buf.full()) {
-
-						//si deconnexion d'un des cote on ferme tout
-						if (this.match.disconnected() || this.isDisconnected) { 
-							this.match.disconnect();
-							this.disconnect();
-							throw new IOException("Channels have been disconnected");
-						}
+	    			
+					//On ne peut pas écrire tant que le buffer est plein --> bloquant
+		    		if (match.buf.full()) {
+							lock.wait();
+						
+		    		}
+		    		else {
 						//on ecrit dans le buffer du channel auquel on est connecte
 						this.match.buf.push(bytes[offset +i]);
 				   		i++;
-	        	lock.notifyAll();
-				}
+				   		lock.notifyAll();
+		    		}
+
 				}
 				catch (Exception e) {
 					e.printStackTrace();
-					System.out.println("Any bytes have been read");
-					return 0;        
+					System.out.println("An error occured, not all bytes have been read");
+					return i;        
 				}
-	        }
+			}
+	    }
         
 		return i; 
 	}
