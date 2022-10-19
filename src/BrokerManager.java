@@ -30,8 +30,7 @@ public class BrokerManager {
 		Channel connectChannel = null;
 		Rdv connectRdv=null;
 		
-		synchronized (lockRdv) {
-			lockRdv.lock();
+		synchronized (rdv) {
 			//recherche dans la liste des rdv si un rdv correspondant au nom et port existe
 			for (int i=0; i<rdv.size();i++) {
 				if (rdv.get(i).name.equals(name) && rdv.get(i).port==port) {
@@ -44,21 +43,21 @@ public class BrokerManager {
 				connectRdv = new Rdv(name, port);
 				rdv.add(connectRdv);
 			}
-			
-			//rdv deja existant avec un accept
-			else if (connectRdv.getAb()!=null) {
-					rdv.remove(connectRdv);
-			}
-			
-			lockRdv.unlock();
-			//rdv deja existant avec un connect --> les connects qui arrivent attendent qu'un nouveau rdv existe
-			if (connectRdv.getCb()!=null) {
-				synchronized(this) {
-					wait();
-				}
+		}
+		//rdv deja existant avec un connect --> les connects qui arrivent attendent qu'un nouveau rdv existe
+		if (connectRdv.getCb()!=null) {
+			synchronized(this) {
+				wait();
 			}
 		}
+		
 		connectChannel = connectRdv.connect(b);
+
+		//une fois la connexion etablie on enleve le rdv de la liste
+		synchronized (rdv) {
+			rdv.remove(connectRdv);
+		}	
+		
 		return connectChannel;
 		
 	}
@@ -66,8 +65,8 @@ public class BrokerManager {
 	public Channel accept(Broker b, String name, int port) throws InterruptedException {
 		Channel acceptChannel;
 		Rdv acceptRdv=null;
-		synchronized (lockRdv) {
-			lockRdv.lock();
+		
+		synchronized (rdv) {
 			//recherche dans la liste des rdv si un rdv correspondant au nom et port existe
 			for (int i=0; i<rdv.size();i++) {
 				if (rdv.get(i).name==name && rdv.get(i).port==port) {
@@ -80,15 +79,13 @@ public class BrokerManager {
 				acceptRdv = new Rdv(name, port);
 				rdv.add(acceptRdv);
 			}
-			
-			//rdv deja existant avec un connect
-			else if (acceptRdv.getCb()!=null) {
-				rdv.remove(acceptRdv);
-			}
-			lockRdv.unlock();
-
 		}
+		
 		acceptChannel = acceptRdv.accept(b);
+		synchronized (rdv) {
+			rdv.remove(acceptRdv);
+		}
+		
 		synchronized(this) {
 			notifyAll();
 		}

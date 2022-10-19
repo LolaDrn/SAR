@@ -3,8 +3,8 @@ import java.util.HashMap;
 public class Main {
 
 	public static void main (String args[]) throws Exception {
-		ServerTask A=new ServerTask("A", 666);
-		ClientTask B=new ClientTask("B","A", 666);
+		TaskServer A=new TaskServer("A", 666);
+		TaskClient B=new TaskClient("B","A", 666);
 		A.start();
 		B.start();
 		

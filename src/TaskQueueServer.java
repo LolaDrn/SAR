@@ -1,9 +1,9 @@
 
-public class TaskQueueA extends Task{
+public class TaskQueueServer extends Task{
 
 	private QueueBrokerImpl broker;
 
-	public TaskQueueA(String queueBrokerName) throws Exception {
+	public TaskQueueServer(String queueBrokerName) throws Exception {
 		this.broker= new QueueBrokerImpl(queueBrokerName);
 
 	}

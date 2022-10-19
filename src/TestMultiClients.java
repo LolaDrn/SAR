@@ -4,14 +4,18 @@ public class TestMultiClients {
 		
 		int nbClient=5;
 		
-		ServerTask server =new ServerTask("A",666);
+		TaskServer server =new TaskServer("A",666);
 		server.start();
 		
-		ClientTask[] clients = new ClientTask[nbClient];
+		TaskClient[] clients = new TaskClient[nbClient];
 		for (int i = 0; i < nbClient; i++) {
-			clients[i] = new ClientTask(Integer.toString(i),"A", 666);
+			clients[i] = new TaskClient(Integer.toString(i),"A", 666);
+		}
+		for (int i = 0; i < nbClient; i++) {
+
 			clients[i].start();
 		}
+
 	}
 			
 //			try {

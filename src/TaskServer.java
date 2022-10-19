@@ -1,11 +1,11 @@
 
-public class ServerTask extends Task{
+public class TaskServer extends Task{
 	
 	private BrokerImpl broker;
 	private int connectionPort;
 	
 
-	public ServerTask(String brokerName, int port) throws Exception {
+	public TaskServer(String brokerName, int port) throws Exception {
 		this.broker= new BrokerImpl(brokerName);
 		this.connectionPort= port;
 	}
@@ -19,7 +19,6 @@ public class ServerTask extends Task{
 				
 				// On lit le message envoye par le client dans le buffer 
 				byte[] msgRead = new byte[1024];
-	
 				int bytesRead = channel.read(msgRead, 0, 1024); 
 				
 				//Envoie du message via le channel

@@ -2,14 +2,14 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Random;
 
-public class ClientTask extends Task{
+public class TaskClient extends Task{
 	
 	private BrokerImpl broker;
 	private String broker2connect;
 	private int connectionPort;
 
 	
-	public ClientTask(String brokerName,String name, int port) throws Exception {
+	public TaskClient(String brokerName,String name, int port) throws Exception {
 		this.broker= new BrokerImpl(brokerName);
 		this.broker2connect=name;
 		this.connectionPort=port;
