@@ -1,4 +1,8 @@
-
+/***
+ * The class corresponds to a queue in which the bytes will be stored in order to allow communication between the two channels.
+ * @author lola
+ *
+ */
 public class CircularBuffer {
 	int m_capacity;
 	int m_start, m_end;

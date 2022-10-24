@@ -1,4 +1,3 @@
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -21,16 +20,16 @@ public class TaskClient extends Task{
 		
 		while (true) {
 			try {
-				//Nouvelle connexion a A sur le port 666
-				channel = broker.connect("A", connectionPort); 		
+				//New connection to A on port 666
+				channel = broker.connect(broker2connect, connectionPort); 		
 				
-				//On envoie un message au server
+				//We send a message to the server
 				byte[] msgToSend = new byte[1024];
 				Random r= new Random();
 				r.nextBytes(msgToSend);
 				channel.write(msgToSend, 0, msgToSend.length);
 				
-				//Reception de la réponse
+				//Receive the response
 				byte[] msgReceived = new byte[1024];
 				int bytesRead = channel.read(msgReceived, 0, 1024);
 				

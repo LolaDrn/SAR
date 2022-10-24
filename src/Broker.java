@@ -2,17 +2,17 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class Broker {
-	//nom du Broker
+	//Broker name
 	protected String name;
-	//liste des ports sur lequels le broker ecoute
+	//list of the ports on which the broker is listening
 	protected List<Integer> listeningports;
-	//hashmap des ports recevant une connexion d'un Broker
+	//hashmap of the ports receiving a connection from a broker
 	protected Map<Integer, ChannelImpl> incoming;
 		
 	
 	public Broker(String name) throws Exception {
 		synchronized(BrokerManager.getInstance()) {
-			//le nom du broker doit etre unique
+			//the broker name must be unique 
 			if (!BrokerManager.getInstance().getBufferMap().containsKey(name)){
 				this.name=name;
 				BrokerManager.getInstance().getBufferMap().put(name,this);

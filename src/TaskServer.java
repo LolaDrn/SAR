@@ -9,7 +9,7 @@ public class TaskServer extends Task{
 		this.broker= new BrokerImpl(brokerName);
 		this.connectionPort= port;
 	}
-
+	
 	public void run() {
 		
 		Channel channel;
@@ -17,18 +17,17 @@ public class TaskServer extends Task{
 			try {
 				channel=broker.accept(connectionPort);
 				
-				// On lit le message envoye par le client dans le buffer 
+				// We read the message sent by the client in the buffer
 				byte[] msgRead = new byte[1024];
 				int bytesRead = channel.read(msgRead, 0, 1024); 
 				
-				//Envoie du message via le channel
+				//Send message via channel
 				int bytesWritten = channel.write(msgRead, 0, 1024);
 	
 				Thread.sleep(50);
 				channel.disconnect();
 			
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
