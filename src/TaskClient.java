@@ -1,6 +1,15 @@
 import java.util.Arrays;
 import java.util.Random;
 
+/***
+ * This task plays the role of the client. 
+ * It wants to connect to a given broker name on a given port.
+ * Once the the connection is established, it writes a message to the other broker and receives the answer.
+ * Then it disconnects.
+ * These three steps are done in a loop.
+ * @author lola
+ *
+ */
 public class TaskClient extends Task{
 	
 	private BrokerImpl broker;
@@ -36,6 +45,8 @@ public class TaskClient extends Task{
 				if (!Arrays.equals(msgToSend, msgReceived))	{
 					throw new Exception("Message send and received aren't the same. Message send : "+msgToSend+" .Message received : "+msgReceived );
 				}
+				Thread.sleep(50);
+
 				channel.disconnect();
 				
 			} catch (Exception e) {

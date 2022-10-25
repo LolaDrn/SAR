@@ -1,4 +1,12 @@
-
+/***
+ * This task plays the role of the server. 
+ * It accepts a connection on a given port.
+ * Once the the connection is established, it reads the message sent by the other broker and writes the same message as the answer.
+ * Then it disconnects.
+ * These three steps are done in a loop.
+ * @author lola
+ *
+ */
 public class TaskServer extends Task{
 	
 	private BrokerImpl broker;

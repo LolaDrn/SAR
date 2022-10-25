@@ -1,6 +1,6 @@
 import java.util.HashMap;
 
-public class Main {
+public class TestOneClient {
 
 	public static void main (String args[]) throws Exception {
 		TaskServer A=new TaskServer("A", 666);

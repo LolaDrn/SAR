@@ -24,6 +24,7 @@ public class BrokerImpl extends Broker{
 	 * The broker waits for a connection on the specified port
 	 * Blocking while waiting for an appointment to be accepted, the shared channel is then created.
 	 * @param port (int) – the port on which the broker waits for the connection
+	 * @return the channel associated to the broker which do the accept
 	 * @throws Exception
 	 */
 	@Override
@@ -43,6 +44,7 @@ public class BrokerImpl extends Broker{
 	 * Blocking while waiting for an appointment to be accepted, the shared channel is then created.
 	 * @param name (string) - the name of the broker to connect
 	 * @param port (int) - the port on which the broker waits for the connection
+	 * @return the channel associated to the broker which do the connect
 	 * @throws Exception
 	 */
 	@Override
