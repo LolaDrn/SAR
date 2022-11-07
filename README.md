@@ -1,5 +1,7 @@
 # SAR
 
+Je m'excuse de ne pas avoir pu vous rendre le projet sous le format demandé.  
+
 ## Présentation du projet :
 Le projet se décompose en plusieurs parties dépendantes les une des autres.  
 ### Partie 1: Broker/Channel  
